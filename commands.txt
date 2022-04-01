@@ -1,0 +1,41 @@
+EC2 instance preparation commands (To be given in console while launching EC2 instance)
+---------------------------------------------------------------------------------------
+
+#!/bin/bash
+sudo apt-get update -y
+sudo apt-get install ruby -y
+sudo apt-get install wget
+cd /home/ubuntu
+wget https://aws-codedeploy-us-west-2.s3.us-west-2.amazonaws.com/latest/install
+chmod +x ./install
+sudo ./install auto
+
+Command to generate nodejs application
+--------------------------------------
+npx express-generator
+
+
+Prerequisite commands to make EC2 machine ready to host nodejs application
+---------------------------------------------------------------------------
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+nvm install v14
+npm i -g pm2
+n=$(which node);n=${n%/bin/node}; chmod -R 755 $n/bin/*; sudo cp -r $n/{bin,lib,share} /usr/local
+
+Commands to save pm2 process
+----------------------------
+sudo su -
+pm2 ls
+pm2 startup
+pm2 save
+
+Sample mount location if you are using Ubuntu with WSL
+------------------------------------------------------
+\\wsl$\Ubuntu-20.04\home\anilbhatt\
+
+Sample AWS CLI command to push the application to S3 location
+-------------------------------------------------------
+aws deploy push --application-name s11_emlo_autoscale_demo --s3-location s3://s11-emlo-autoscale-demo-s3/app_code_repo/app.zip --ignore-hidden-files --region us-west-2
